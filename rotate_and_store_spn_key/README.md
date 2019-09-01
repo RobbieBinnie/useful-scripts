@@ -4,6 +4,8 @@ This program is designed to rotate SPN keys and then store the updated one in ke
 
 The spn that is used to rotate the keys will either need the application administrator role, or be the owner of the spns which it is rotating.
 
+This script also assumes that the display name of the SPN will match the secret name in keyvault
+
 ## Running the script
 Example of how to run it shown in run_rotate_key.ps1, variables listed below (the guids for the SPN are obviously fake...):
 
