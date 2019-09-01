@@ -1,6 +1,6 @@
 # Update spn key and store it in keyvault
 
-This program is designed to rotate SPN keys and then store the updated one in keyvault. It id designed to be run nightly in a pipeline, which passes in the authentication methods securely; however, with a few modifications could be run in an automation account, and make use of the credential store there.
+This program is designed to rotate SPN keys and then store the updated one in keyvault. It is designed to be run nightly in a pipeline, which passes in the authentication methods securely; however, with a few modifications could be run in an automation account, and make use of the credential store there.
 
 The spn that is used to rotate the keys will either need the application administrator role, or be the owner of the spns which it is rotating.
 
