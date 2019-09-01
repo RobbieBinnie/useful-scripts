@@ -2,8 +2,8 @@
 
 This program can be used to deploy code to automation accounts
 
-## running
-example of how to run it shown in run_deploy_code.ps1, variables:
+## Running the script
+Example of how to run it shown in run_deploy_code.ps1, variables listed below:
 
 | variable name | example | description |
 |---------------|---------|-------------|
