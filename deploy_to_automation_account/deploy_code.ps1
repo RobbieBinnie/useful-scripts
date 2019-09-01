@@ -19,18 +19,19 @@ $function = {
             $runbookType
         )
 
+        # set up the path for the script
         $scriptPath = "$scriptRoute$runbookName.ps1"
-
-        echo "$scriptPath" >> /Users/robbiebinnie/Documents/shared_scripts/useful-scripts/deploy_to_automation_account/file.txt
-
+        
         echo "running powershell for $runbookName, on $scriptpath"
 
+        # remove the runbook
         echo "  Removing runbook"
         Remove-AzAutomationRunbook -Name $runbookName `
             -ResourceGroupName $resourceGroupName `
             -AutomationAccountName $automationAccountName `
             -Force
 
+        # import the runbook
         echo "  Importing runbook"
         Import-AzAutomationRunbook -Name $runbookName `
             -Path $scriptPath `
@@ -38,6 +39,7 @@ $function = {
             -AutomationAccountName $automationAccountName `
             -Type $runbookType
 
+        # publish the runbook
         echo "  Publishing runbook"
         Publish-AzAutomationRunbook -AutomationAccountName $automationAccountName `
             -Name $runbookName `
@@ -65,5 +67,10 @@ foreach ($runbookName in $runbookList) {
 
 # if running in parallel wait for the jobs to complete
 if ($runInParallel){
-    Get-Job | wait-job       
+    # wait for the job to be done
+    Get-Job | Wait-Job
+    # write output of job
+    Get-Job | Receive-Job 
+    # clean up job   
+    Get-Job | Remove-Job    
 }
