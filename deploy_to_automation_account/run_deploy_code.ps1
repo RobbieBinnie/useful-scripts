@@ -1,4 +1,4 @@
-$runbookList = $("runbook1", "runbook2", "runbook3", "runbook4")
+$runbookList = @("runbook1", "runbook2", "runbook3", "runbook4")
 $runbookType = "PowerShell"
 $automationAccountName =  "2345"
 $resourceGroupName = "2345"
