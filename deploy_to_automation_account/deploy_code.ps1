@@ -19,8 +19,15 @@ $function = {
             $runbookType
         )
 
+        if ($runbookType -in @("PowerShell","PowerShellWorkflow")){
+            $extension = ".ps1"
+        } elseif ($runbookType -in @("GraphicalPowershell","GraphicalPowerShellWorkflow","Graph")) {
+            $extension = ".graphrunbook"
+        } else {
+            $extension = ".py"
+        }
         # set up the path for the script
-        $scriptPath = "$scriptRoute$runbookName.ps1"
+        $scriptPath = "$scriptRoute$runbookName$extension"
         
         echo "running powershell for $runbookName, on $scriptpath"
 
