@@ -12,6 +12,6 @@ example of how to run it shown in run_deploy_code.ps1, variables:
 | automationAccountName | automationaccount01                  | The name of the automation account |
 | resourceGroupName     | myaarg                               | The name of the resource group |
 | scriptRoute           | /Users/myusername/Documents/aa_code/ | The path to the scripts (must end in /) |
-| runInParallel         | $true                                | Should powershell jobs be used to run deployment in parallel
+| runInParallel         | $true                                | Should powershell jobs be used to run deployment in parallel |
 
  
