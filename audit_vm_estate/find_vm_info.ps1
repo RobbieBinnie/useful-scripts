@@ -58,13 +58,13 @@ foreach ($sub in $subs) {
 
 }
 
-echo "name,type,owner,subscription (id),VM id,tags"
+echo "name,type,size,subscription (id),VM id,tags"
 
 foreach ($vm in $vms){
     $vmtype = Check-VmType -VmObject $vm
     $subid = $vm.id.split("/")[2]
-    $owner = ""
+    $size = $vm.HardwareProfile.VmSize
     $tagsString = Get-TagString -VmObject $vm -tags $tags
 
-    echo "$($vm.name),$vmtype,$owner,$subid,$($vm.id),$tagsString" 
+    echo "$($vm.name),$vmtype,$size,$subid,$($vm.id),$tagsString" 
 }
