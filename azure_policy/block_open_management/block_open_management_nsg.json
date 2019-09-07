@@ -1,0 +1,49 @@
+{
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "block_open_management_nsg", 
+    "properties": {
+        "displayName": "block_open_management_nsg",
+        "description": "This policy will stop users creating NSGs that are blanket open for management ports to the internet",
+        "parameters": {},
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                                "equals": "Inbound"
+                            },
+                            {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                                "equals": "Allow"
+                            },
+                            {                               
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                                "in": [
+                                    "22",
+                                    "3389",
+                                    "*"
+                                ]
+                            },
+                            {  
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                                "in": [
+                                    "*",
+                                    "Internet"
+                                ] 
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }   
+}
