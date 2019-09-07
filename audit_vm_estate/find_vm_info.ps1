@@ -1,17 +1,22 @@
+##### this is used for all subs
+param(
+    $subs = @("all"),
+    $tags = @("all")
+)
+
 function Check-VmType {
     param (
         $VmObject
     )
     
-    if ($VmObject.StorageProfile.OSDisk.OSType -eq "Windows"){
-        return "windows"
-    }elseif ($VmObject.StorageProfile.OSDisk.OSType -eq "Linux") {
-        if ($VmObject.StorageProfile.ImageReference.Publisher){
-            $fullOs = "$($VmObject.StorageProfile.ImageReference.Publisher):$($VmObject.StorageProfile.ImageReference.Offer):$($VmObject.StorageProfile.ImageReference.Sku)"
-            return $fullOs
-        }else{
-            return "linux"
-        }
+    if ($VmObject.StorageProfile.ImageReference.Publisher){
+        $fullOs = "$($VmObject.StorageProfile.ImageReference.Publisher):$($VmObject.StorageProfile.ImageReference.Offer):$($VmObject.StorageProfile.ImageReference.Sku)"
+        return $fullOs
+    }elseif ( -not ([string]::IsNullOrEmpty($VmObject.StorageProfile.OSDisk.OSType))){
+        return $VmObject.StorageProfile.OSDisk.OSType
+    }
+    }else {
+        return "Unknown OS"
     }
 }
 
@@ -34,14 +39,9 @@ function Get-TagString {
     return $tagsString
 }
 
-##### this is used for all subs
-param(
-    $subs = @("all"),
-    $tags = @("all")
-)
 
-if ($subs[0] = "all"){
-    $subs = Get-azSubscription
+if ($subs[0] -eq "all"){
+    $subs = Get-azSubscription | select Id
 }
 
 $number = $subs.count
@@ -49,16 +49,16 @@ $vms = @()
 $count = 0
 echo "there are $number subscriptions"
 foreach ($sub in $subs) {
-    Set-AzContext -Subscriptionid $sub.Id | out-null
+    Set-AzContext -Subscriptionid $sub | out-null
     $vms += get-azvm
 
     $count = $count + 1
     $percentval = [int]($count/$number * 100)
-    echo "completed sub: $($sub.id), we are at $($percentval)%"
+    echo "completed sub: $($sub), we are at $($percentval)%"
 
 }
 
-echo "name,type,owner,subscription (id),VM id,tags" > vmlist.csv
+echo "name,type,owner,subscription (id),VM id,tags"
 
 foreach ($vm in $vms){
     $vmtype = Check-VmType -VmObject $vm
@@ -66,6 +66,5 @@ foreach ($vm in $vms){
     $owner = ""
     $tagsString = Get-TagString -VmObject $vm -tags $tags
 
-    echo "$($vm.name),$vmtype,$owner,$subid,$($vm.id),$tagsString" >> vmlist.csv
-
+    echo "$($vm.name),$vmtype,$owner,$subid,$($vm.id),$tagsString" 
 }
