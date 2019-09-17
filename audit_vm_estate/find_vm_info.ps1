@@ -39,6 +39,19 @@ function Get-TagString {
     return $tagsString
 }
 
+function Check-Ip {
+    param (
+        $VmObject
+    )
+    
+    $nicRg = $VmObject.NetworkProfile.NetworkInterfaces[0].id.split("/")[4]
+    $nicName = $VmObject.NetworkProfile.NetworkInterfaces[0].id.split("/")[8]
+
+    $nic = Get-AzNetworkInterface -name $nicName -ResourceGroupName $nicRg
+
+    return $nic.IpConfigurations.PrivateIpAddress
+
+}
 
 if ($subs[0] -eq "all"){
     $subs = Get-azSubscription | select Id
@@ -58,13 +71,14 @@ foreach ($sub in $subs) {
 
 }
 
-echo "name,type,size,subscription (id),VM id,tags"
+echo "name,type,ipaddress,size,subscription (id),VM id,tags"
 
 foreach ($vm in $vms){
     $vmtype = Check-VmType -VmObject $vm
     $subid = $vm.id.split("/")[2]
     $size = $vm.HardwareProfile.VmSize
     $tagsString = Get-TagString -VmObject $vm -tags $tags
+    $ipaddress = Check-Ip -VmObject $vm
 
-    echo "$($vm.name),$vmtype,$size,$subid,$($vm.id),$tagsString" 
+    echo "$($vm.name),$vmtype,$ipaddress,$size,$subid,$($vm.id),$tagsString" 
 }
