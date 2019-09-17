@@ -14,7 +14,6 @@ function Check-VmType {
         return $fullOs
     }elseif ( -not ([string]::IsNullOrEmpty($VmObject.StorageProfile.OSDisk.OSType))){
         return $VmObject.StorageProfile.OSDisk.OSType
-    }
     }else {
         return "Unknown OS"
     }
@@ -53,32 +52,38 @@ function Check-Ip {
 
 }
 
+
+$VerbosePreference="Continue"
+
+
 if ($subs[0] -eq "all"){
-    $subs = Get-azSubscription | select Id
+    $subs = Get-azSubscription
+    $subs = $subs.Id
 }
 
 $number = $subs.count
 $vms = @()
 $count = 0
-echo "there are $number subscriptions"
+
+write-verbose "there are $number subscriptions"
+
+write-output "name,type,ipaddress,size,subscription (id),VM id,tags"
+
 foreach ($sub in $subs) {
     Set-AzContext -Subscriptionid $sub | out-null
-    $vms += get-azvm
+    $vms = get-azvm
 
     $count = $count + 1
     $percentval = [int]($count/$number * 100)
-    echo "completed sub: $($sub), we are at $($percentval)%"
+    write-verbose "completed sub: $($sub), we are at $($percentval)%"
 
-}
+    foreach ($vm in $vms){
+        $vmtype = Check-VmType -VmObject $vm
+        $subid = $vm.id.split("/")[2]
+        $size = $vm.HardwareProfile.VmSize
+        $tagsString = Get-TagString -VmObject $vm -tags $tags
+        $ipaddress = Check-Ip -VmObject $vm
 
-echo "name,type,ipaddress,size,subscription (id),VM id,tags"
-
-foreach ($vm in $vms){
-    $vmtype = Check-VmType -VmObject $vm
-    $subid = $vm.id.split("/")[2]
-    $size = $vm.HardwareProfile.VmSize
-    $tagsString = Get-TagString -VmObject $vm -tags $tags
-    $ipaddress = Check-Ip -VmObject $vm
-
-    echo "$($vm.name),$vmtype,$ipaddress,$size,$subid,$($vm.id),$tagsString" 
+        write-output "$($vm.name),$vmtype,$ipaddress,$size,$subid,$($vm.id),$tagsString" 
+    }
 }
