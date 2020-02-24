@@ -1,0 +1,30 @@
+{
+	"if": {
+		"allOf": [
+			{
+				"anyOf": [
+					{
+						"not": {
+							"field": "tags.info",
+							"contains": "application="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.info",
+							"contains": "environment="
+						}
+					}
+				]
+			},
+			{
+				"field": "type",
+				"equals": "Microsoft.Resources/subscriptions/resourceGroups"
+			}
+		]
+
+	},
+	"then": {
+		"effect": "deny"
+	}
+}

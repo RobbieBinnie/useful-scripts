@@ -1,0 +1,43 @@
+
+{
+	"if": {
+		"allOf": [
+			{
+				"anyOf": [
+					{
+						"not": {
+							"field": "tags.resiliency",
+							"contains": "backup="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.resiliency",
+							"contains": "patching="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.resiliency",
+							"contains": "availability="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.resiliency",
+							"contains": "criticality="
+						}
+					}
+				]
+			},
+			{
+				"field": "type",
+				"equals": "Microsoft.Resources/subscriptions/resourceGroups"
+			}
+		]
+
+	},
+	"then": {
+		"effect": "deny"
+	}
+}

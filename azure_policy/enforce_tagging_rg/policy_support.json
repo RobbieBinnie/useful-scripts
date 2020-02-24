@@ -1,0 +1,36 @@
+{
+	"if": {
+		"allOf": [
+			{
+				"anyOf": [
+					{
+						"not": {
+							"field": "tags.support",
+							"contains": "technical="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.support",
+							"contains": "business="
+						}
+					},
+					{
+						"not": {
+							"field": "tags.support",
+							"contains": "creator="
+						}
+					}
+				]
+			},
+			{
+				"field": "type",
+				"equals": "Microsoft.Resources/subscriptions/resourceGroups"
+			}
+		]
+
+	},
+	"then": {
+		"effect": "deny"
+	}
+}
